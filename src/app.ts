@@ -25,7 +25,7 @@ type Player = {
 const TICK_RATE = 30
 const MOVEMENT_SPEED = 10
 
-const players: Player[] = []
+let players: Player[] = []
 const inputsMap: InputsMap = {}
 
 const tick = () => {
@@ -61,6 +61,10 @@ const main = async () => {
 
     socket.on('inputs', (inputs) => {
       inputsMap[socket.id] = inputs
+    })
+
+    socket.on('disconnect', () => {
+      players = players.filter((player) => player.id !== socket.id)
     })
   })
 
