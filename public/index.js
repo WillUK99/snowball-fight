@@ -1,14 +1,19 @@
 const mapImage = new Image()
 mapImage.src = '/snowy-sheet.png'
+const santaImage = new Image()
+santaImage.src = '/santa.png'
 
 const canvasEl = document.getElementById('canvas')
 const ctx = canvasEl.getContext('2d')
 canvasEl.width = window.innerWidth
 canvasEl.height = window.innerHeight
 
-let map = [[]]
 const TILE_SIZE = 16
 const TILES_IN_ROW = 8
+
+let map = [[]]
+let players = []
+
 
 window.addEventListener('resize', () => {
   canvasEl.width = window.innerWidth
@@ -22,6 +27,32 @@ socket.on('connect', () => {
 })
 
 socket.on('2D Map', (mapData) => map = mapData)
+
+socket.on('players', (serverPlayers) => {
+  players = serverPlayers
+})
+
+const keyboardInputs = {
+  'w': false,
+  'a': false,
+  's': false,
+  'd': false,
+}
+
+const setActiveKeys = (keyPressed, boolean) => {
+  Object.keys(keyboardInputs).map(() => keyboardInputs[keyPressed] = boolean)
+  socket.emit('inputs', keyboardInputs)
+}
+
+window.addEventListener('keydown', (e) => {
+  const { key } = e
+  setActiveKeys(key, true)
+})
+
+window.addEventListener('keyup', (e) => {
+  const { key } = e
+  setActiveKeys(key, false)
+})
 
 const gameLoop = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -43,6 +74,15 @@ const gameLoop = () => {
         TILE_SIZE,
       )
     }
+  }
+
+  for (const player of players) {
+    const { x, y } = player
+    ctx.drawImage(
+      santaImage,
+      x,
+      y
+    )
   }
 
   requestAnimationFrame(gameLoop)

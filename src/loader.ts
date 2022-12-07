@@ -2,7 +2,7 @@ const tmx = require('tmx-parser')
 
 module.exports = async () => {
   const map: any = await new Promise((resolve, reject) => {
-    tmx.parseFile('./src/map.tmx', (err: Error, loadedMap: any) => {
+    tmx.parseFile('./src/snowballmap.tmx', (err: Error, loadedMap: any) => {
       if (err) return reject(err)
       resolve(loadedMap)
     })
@@ -10,7 +10,6 @@ module.exports = async () => {
 
   const layer = map.layers[0]
   const tiles = layer.tiles
-  // console.log(tiles)
   const map2D: any[] = []
 
   for (let row = 0; row < map.width; row++) {
